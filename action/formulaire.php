@@ -3,7 +3,6 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 include_once("include.php");
-session_start();
 
 if(isset($_POST['submit_contact'])) {
 	
@@ -14,7 +13,9 @@ if(isset($_POST['submit_contact'])) {
 	$email = $_POST['email'];
 	$tel = $_POST['tel'];
 	$message = $_POST['message'];
+	// $id_user = strtoupper($name) . "_" . strtoupper($nickname);
 	
+
 	if(empty($name)) {
 		
 		$_SESSION['error'] = "Vous n'avez pas renseigné de nom..";
@@ -50,32 +51,35 @@ if(isset($_POST['submit_contact'])) {
 		$_SESSION['error'] = "Vous n'avez renseigné aucun message..";
 		Header("Location: ../?p=contact");
 		
-	} //else if(isset($name) && isset($nickname)) {
+	} else {
 		
-		//$methodUser = new User_controller();
-		// if($methodUser->getUserExist($name, $nickname)) {
+		$methodUser = new User_controller();
+		if($methodUser->getUserExist($id_user, $email)) { //si true alors dégage
 
-			// $_SESSION['error'] = "Il semble que vous ayez déjà remplis le formulaire de contact, connectez-vous ".$name." ".$nickname."";
-			// Header("Location: ../?p=contact");	
-		// }
-		
-	//} 
-	else {
+			$_SESSION['error'] = "Il semble que vous ayez déjà remplis le formulaire de contact, connectez-vous ".$id_user."";
+			Header("Location: ../?p=contact");	
+		}
+		else //n' existe pas
+		{
 			$methodUser = new User_controller();
-            if($methodUser->Contact($name, $nickname, $company, $reason, $email, $tel, $message)) {
-                
+			if($methodUser->Contact($name, $nickname, $company, $reason, $email, $tel, $message, $id_user)) {
+				
+				// $methodUser->Login($name, $id_user);
 				$_SESSION['valide'] = "Votre message a été envoyé, vous êtes à présent connecté, votre identifiant est : ".$name."_".$nickname."";
 				Header("Location: ../?p=password");
-            }
-            else
-            {
-                $_SESSION['error'] = "ERREUR : Veuillez contacter l'administrateur du site";
-                Header("Location: ../?p=contact");
-            }
+			}
+			else
+			{
+				$_SESSION['error'] = "ERREUR : Veuillez contacter l'administrateur du site";
+				Header("Location: ../?p=contact");
+			}
 
-	}
+		}		
+	} 
 	
-} else {
+	
+} 
+else {
 	
 	$_SESSION['error'] = "Vous n'avez rien à faire ici";
 	Header("Location: ../?p=contact");

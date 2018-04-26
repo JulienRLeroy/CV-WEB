@@ -11,9 +11,9 @@ class User {
 	private $_reason; 
 	private $_email;
 	private $_tel; 
-	private $_message; 
+	private $_id_user; 
 
-	function __construct($id, $name, $nickname, $company, $reason, $email, $tel, $message) {
+	function __construct($id, $name, $nickname, $company, $reason, $email, $tel, $_id_user) {
 	    
 		$this->_BDD = new DB();
 		$this->_id = $id;
@@ -23,7 +23,7 @@ class User {
 		$this->_reason = $reason;
 		$this->_email = $email;
 		$this->_tel = $tel;
-		$this->_message = $message;
+		$this->_id_user = $_id_user;
 		
 	}
 
@@ -52,8 +52,8 @@ class User {
 		return $this->tel;
 	}
 	
-	public function getMessage() {
-		return $this->message;
+	public function getIdUser() {
+		return $this->id_user;
 	}
 	
 	
